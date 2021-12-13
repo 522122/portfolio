@@ -15,6 +15,8 @@ const Container = styled.div`
 `;
 
 export const GlobalStyle = createGlobalStyle`
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap');
+    
     * {
         box-sizing: border-box;
     }
@@ -51,7 +53,7 @@ export const Header = styled(Container)`
 
 export const Name = styled.div`
   color: ${({ theme }) => theme.colors.brand};
-  font-family: "Helvetica Neue";
+  font-family: "Roboto", sans-serif;
   font-size: 60px;
   line-height: 58px;
   width: 280px;
