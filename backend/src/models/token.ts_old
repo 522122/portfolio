@@ -9,8 +9,6 @@ class Token extends Model {
 
   public UserId?: string
   public User?: User
-
-  public setUser!: (user: User) => void
 }
 
 Token.init(
