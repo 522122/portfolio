@@ -1,4 +1,4 @@
-import styled, { createGlobalStyle } from "styled-components";
+import styled, { createGlobalStyle } from "styled-components"
 
 const Container = styled.div`
   max-width: 1200px;
@@ -12,11 +12,9 @@ const Container = styled.div`
     padding-left: 15px;
     padding-right: 15px;
   }
-`;
+`
 
-export const GlobalStyle = createGlobalStyle`
-    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap');
-    
+export const GlobalStyle = createGlobalStyle`    
     * {
         box-sizing: border-box;
     }
@@ -25,14 +23,14 @@ export const GlobalStyle = createGlobalStyle`
         margin: 0;
         padding: 0;
     }
-`;
+`
 
 export const Portfolio = styled.div`
   height: 100vh;
   width: 100%;
   display: flex;
   flex-direction: column;
-`;
+`
 
 export const Header = styled(Container)`
   margin-top: 120px;
@@ -49,7 +47,7 @@ export const Header = styled(Container)`
     margin-top: 40px;
     margin-bottom: 60px;
   }
-`;
+`
 
 export const Name = styled.div`
   color: ${({ theme }) => theme.colors.brand};
@@ -60,7 +58,7 @@ export const Name = styled.div`
   letter-spacing: 2px;
   font-weight: bold;
   margin-right: 20px;
-`;
+`
 
 export const Bullshit = styled.div`
   font-family: Arial;
@@ -68,7 +66,7 @@ export const Bullshit = styled.div`
   letter-spacing: 3px;
   line-height: 18px;
   color: ${({ theme }) => theme.colors.gray2};
-`;
+`
 
 export const Wrap = styled.div`
   width: 100%;
@@ -83,12 +81,12 @@ export const Wrap = styled.div`
     padding: 0;
     text-align: center;
   }
-`;
+`
 
 export const Main = styled(Container)`
   display: flex;
   justify-content: center;
-`;
+`
 
 export const SocialList = styled.ul`
   display: flex;
@@ -97,7 +95,7 @@ export const SocialList = styled.ul`
   @media (max-width: 768px) {
     flex-direction: column;
   }
-`;
+`
 
 export const SocialListItem = styled.li`
   list-style: none;
@@ -125,7 +123,7 @@ export const SocialListItem = styled.li`
       width: 100%;
     }
   }
-`;
+`
 
 export const Footer = styled(Container)`
   text-align: center;
@@ -136,4 +134,4 @@ export const Footer = styled(Container)`
   padding-bottom: 20px;
   padding-top: 20px;
   color: ${({ theme }) => theme.colors.gray2};
-`;
+`
