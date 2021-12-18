@@ -35,5 +35,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "ts-lint": "^4.5.1",
+    "prettier": "^2.5.1"
   }
 }

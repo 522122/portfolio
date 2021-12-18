@@ -1,4 +1,4 @@
-import { ThemeProvider } from "styled-components";
+import { ThemeProvider } from "styled-components"
 import {
   GlobalStyle,
   Portfolio,
@@ -10,8 +10,9 @@ import {
   SocialListItem,
   SocialList,
   Footer,
-} from "./components/styled/main";
-import * as icons from "./icons/index";
+} from "./components/styled/main"
+import * as icons from "./icons/index"
+// import { useUser } from "./context/user"
 
 const theme = {
   colors: {
@@ -19,7 +20,7 @@ const theme = {
     gray1: "#828282",
     gray2: "#D2D2D2",
   },
-};
+}
 
 const socials = [
   {
@@ -32,9 +33,10 @@ const socials = [
     icon: icons.linkedin,
     externalLink: "https://linkedin.com/in/andrej-paskalev",
   },
-];
+]
 
 function App() {
+  // const [userState, userDispatcher, userActions] = useUser()
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyle />
@@ -50,7 +52,7 @@ function App() {
         <Main>
           <SocialList>
             {socials.map((s, index) => (
-              <SocialListItem even={(index + 1) % 2 === 0}>
+              <SocialListItem even={(index + 1) % 2 === 0} key={s.name}>
                 <a href={s.externalLink} target="_blank" rel="noreferrer">
                   <img key={s.name} src={s.icon} alt={s.name} />
                 </a>
@@ -61,7 +63,7 @@ function App() {
         <Footer>2021</Footer>
       </Portfolio>
     </ThemeProvider>
-  );
+  )
 }
 
-export default App;
+export default App
