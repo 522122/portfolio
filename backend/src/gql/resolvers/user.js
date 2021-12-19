@@ -53,14 +53,20 @@ const login = (db) => async (parent, args, context) => {
   }
 }
 
+const registerSchema = Joi.object({
+  loginName: Joi.string().email().required(),
+  password: Joi.string().min(5).required(),
+  displayName: Joi.string().trim().min(1).max(10).required(),
+})
+
 const register = (db) => async (parent, args, context) => {
   const { loginName, password, displayName } = args.input
 
-  const validationResult = registerSchema.validate(args.input)
-
-  if (validationResult.error) {
-    throw Error(validationResult.error)
-  }
+  validateSchema(registerSchema, {
+    loginName,
+    password,
+    displayName,
+  })
 
   const user = await db.User.create({
     loginName: loginName,
