@@ -1,36 +1,52 @@
-import jsonwebtoken from "jsonwebtoken"
-import Joi from "joi"
+const jsonwebtoken = require("jsonwebtoken")
 
-export const createToken = (data: any) => {
-  return jsonwebtoken.sign(data, process.env.SECRET!, {
+const createToken = (data) => {
+  return jsonwebtoken.sign(data, process.env.SECRET, {
     algorithm: "HS256",
     expiresIn: "10m",
   })
 }
 
-export const verifyToken = (headers: any) => {
+const verifyToken = (headers) => {
   const t = headers.authorization.replace(/^Bearer /, "")
-  return jsonwebtoken.verify(t, process.env.SECRET!, {
+  return jsonwebtoken.verify(t, process.env.SECRET, {
     algorithms: ["HS256"],
   })
 }
 
-export const decodeToken = (headers: any) => {
+const decodeToken = (headers) => {
   const t = headers.authorization.replace(/^Bearer /, "")
   return jsonwebtoken.decode(t)
 }
 
-export const niceJoi = (error: Joi.ValidationError) => {
+const niceJoi = (error) => {
   const keys = error.details.map((d) => d.path.join("."))
   const messages = error.details.map((d) => d.message)
 
-  return keys.reduce(
-    (a: { [key: string]: any }, c, index) => {
-      a.errors[c] = messages[index]
-      return a
-    },
-    { errors: {} }
-  )
+  return keys.reduce((a, c, index) => {
+    a[c] = messages[index]
+    return a
+  }, {})
+}
+
+/**
+ *
+ * @param {*} schema
+ * @param {*} data
+ * @description not much different than calling validate on schema directly, but saves few lines by throwing error
+ */
+const validateSchema = (schema, data) => {
+  const { error } = schema.validate(data, { abortEarly: false })
+  if (error) {
+    throw error
+  }
+}
+
+module.exports = {
+  createToken,
+  verifyToken,
+  decodeToken,
+  validateSchema,
 }
 
 // export const somethingWrong = (res: Response) => (error: any) => {

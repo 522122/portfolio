@@ -5,10 +5,6 @@ const bcrypt = require("bcrypt")
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
-    password
-    Tokens
-    id
-
     static associate(models) {
       User.hasMany(models.Token)
       User.hasMany(models.TodoList)

@@ -5,13 +5,13 @@ import Joi from "joi"
 
 const router = express.Router()
 
-const usernameSchema = Joi.string().email().required()
+const emailSchema = Joi.string().email().required()
 const displayNameSchema = Joi.string().min(3).required()
 const passwordSchema = Joi.string().min(5).required()
 const uuidSchema = Joi.string().uuid()
 
 const registerSchema = Joi.object({
-  username: usernameSchema,
+  loginName: emailSchema,
   password: passwordSchema,
   displayName: displayNameSchema,
 })

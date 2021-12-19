@@ -5,7 +5,7 @@ import bcrypt from "bcrypt"
 import { createToken } from "../utils"
 import AppError, { ErrorType } from "../AppError"
 
-export const register: RequestHandler = async (req, res) => {
+export const register = async (req, res) => {
   try {
     await db.models.User.create({
       loginName: req.body.username,
@@ -14,7 +14,7 @@ export const register: RequestHandler = async (req, res) => {
     })
 
     res.sendStatus(200)
-  } catch (e: any) {
+  } catch (e) {
     if (e instanceof UniqueConstraintError) {
       return res.status(403).json({
         message: "Username already taken",
@@ -27,7 +27,7 @@ export const register: RequestHandler = async (req, res) => {
   }
 }
 
-export const login: RequestHandler = async (req, res) => {
+export const login = async (req, res) => {
   try {
     const user = await db.models.User.scope().findOne({
       where: {
@@ -77,7 +77,7 @@ export const login: RequestHandler = async (req, res) => {
   }
 }
 
-export const tokenLogin: RequestHandler = async (req, res) => {
+export const tokenLogin = async (req, res) => {
   try {
     const token = await db.models.Token.findOne({
       where: {
@@ -103,12 +103,12 @@ export const tokenLogin: RequestHandler = async (req, res) => {
     // create new one-time refresh token
     const newToken = await db.models.Token.create({
       app: req.headers["user-agent"],
-      UserId: token.User!.id,
+      UserId: token.User.id,
     })
 
     res.json({
-      ...token.User!.serialize(),
-      token: createToken(token.User!.serialize()),
+      ...token.User.serialize(),
+      token: createToken(token.User.serialize()),
       refresh: newToken.id,
     })
   } catch (e) {

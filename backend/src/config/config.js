@@ -3,7 +3,7 @@ const Path = require("path")
 module.exports = {
   development: {
     dialect: "sqlite",
-    storage: Path.resolve(__dirname, "../../", "development.sqlite"),
+    storage: __dirname + "/../../development.sqlite",
   },
   test: {
     username: "root",

@@ -1,0 +1,26 @@
+type User {
+  id: ID
+  loginName: String
+  displayName: String
+  admin: Boolean
+}
+type LoginOutput {
+  user: User
+  accessToken: String
+  refreshToken: String
+}
+input LoginInput {
+  username: String!
+  password: String!
+}
+type Query {
+  login(input: LoginInput): LoginOutput
+}
+input RegisterInput {
+  loginName: String!
+  displayName: String!
+  password: String!
+}
+type Mutation {
+  register(input: RegisterInput): User
+}
