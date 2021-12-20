@@ -2,13 +2,22 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable("Tokens", {
-      id: {
-        type: Sequelize.UUID,
+      jwt: {
+        type: Sequelize.STRING,
         primaryKey: true,
         allowNull: false,
       },
       app: {
         type: Sequelize.STRING,
+      },
+      UserId: {
+        type: Sequelize.UUID,
+        references: {
+          model: "Users",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "SET NULL",
       },
       createdAt: {
         allowNull: false,

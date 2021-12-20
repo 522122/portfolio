@@ -8,13 +8,21 @@ module.exports = (sequelize, DataTypes) => {
   }
   Token.init(
     {
-      id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
+      jwt: {
+        type: DataTypes.STRING,
         primaryKey: true,
         allowNull: false,
       },
       app: DataTypes.STRING,
+      UserId: {
+        type: DataTypes.UUID,
+        references: {
+          model: "Users",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "SET NULL",
+      },
     },
     {
       sequelize,

@@ -1,33 +1,52 @@
 const jsonwebtoken = require("jsonwebtoken")
 
-const createToken = (data) => {
-  return jsonwebtoken.sign(data, process.env.SECRET, {
+const createToken = (data, secret, expiresIn) => {
+  return jsonwebtoken.sign(data, secret, {
     algorithm: "HS256",
-    expiresIn: "10m",
+    expiresIn,
   })
 }
 
-const verifyToken = (headers) => {
-  const t = headers.authorization.replace(/^Bearer /, "")
-  return jsonwebtoken.verify(t, process.env.SECRET, {
-    algorithms: ["HS256"],
-  })
+const verifyToken = (token, secret) => {
+  try {
+    return jsonwebtoken.verify(token, secret, {
+      algorithms: ["HS256"],
+    })
+  } catch (error) {
+    return false
+  }
 }
 
-const decodeToken = (headers) => {
-  const t = headers.authorization.replace(/^Bearer /, "")
-  return jsonwebtoken.decode(t)
+const createRefreshToken = (data) => {
+  return createToken(data, process.env.REFRESH_SECRET, "30d")
 }
 
-const niceJoi = (error) => {
-  const keys = error.details.map((d) => d.path.join("."))
-  const messages = error.details.map((d) => d.message)
-
-  return keys.reduce((a, c, index) => {
-    a[c] = messages[index]
-    return a
-  }, {})
+const createAccessToken = (data) => {
+  return createToken(data, process.env.ACCESS_SECRET, "10m")
 }
+
+const verifyRefreshToken = (token) => {
+  return verifyToken(token, process.env.REFRESH_SECRET)
+}
+
+const verifyAccessToken = (token) => {
+  return verifyToken(token, process.env.ACCESS_SECRET)
+}
+
+// /**
+//  *
+//  * @param {*} error
+//  * @returns attempt to format Joi errors as key: value pairs
+//  */
+// const niceJoi = (error) => {
+//   const keys = error.details.map((d) => d.path.join("."))
+//   const messages = error.details.map((d) => d.message)
+
+//   return keys.reduce((a, c, index) => {
+//     a[c] = messages[index]
+//     return a
+//   }, {})
+// }
 
 /**
  *
@@ -42,31 +61,32 @@ const validateSchema = (schema, data) => {
   }
 }
 
-module.exports = {
-  createToken,
-  verifyToken,
-  decodeToken,
-  validateSchema,
+/**
+ *
+ * @param {*} context context received by resolvers
+ * @description used in resolvers to identify user based on access token or throws 401 error
+ */
+const needUser = (context) => {
+  if (!context.headers.authorization) {
+    throw Error("No auth header")
+  }
+
+  const tokenData = verifyAccessToken(context.headers.authorization)
+
+  if (tokenData) {
+    return tokenData
+  } else {
+    throw Error(401)
+  }
 }
 
-// export const somethingWrong = (res: Response) => (error: any) => {
-//   const log = db.models.ErrorLog({
-//     message: JSON.stringify(error),
-//   });
-//   log
-//     .save()
-//     .then((model) => {
-//       console.warn("\x1b[33m%s\x1b[0m", "Error saved", JSON.stringify(error));
-//     })
-//     .catch((e) => {
-//       console.log(
-//         "\x1b[31m%s\x1b[0m",
-//         "lol, error savng error",
-//         JSON.stringify(e),
-//         JSON.stringify(error)
-//       );
-//     })
-//     .finally(() => {
-//       res.status(500).send("Something went wrong");
-//     });
-// };
+module.exports = {
+  validateSchema,
+  needUser,
+
+  createRefreshToken,
+  createAccessToken,
+
+  verifyRefreshToken,
+  verifyAccessToken,
+}

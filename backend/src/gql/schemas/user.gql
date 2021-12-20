@@ -9,18 +9,13 @@ type LoginOutput {
   accessToken: String
   refreshToken: String
 }
-input LoginInput {
-  username: String!
-  password: String!
-}
-type Query {
-  login(input: LoginInput): LoginOutput
-}
 input RegisterInput {
   loginName: String!
   displayName: String!
   password: String!
 }
 type Mutation {
-  register(input: RegisterInput): User
+  register(input: RegisterInput): User!
+  login(username: String, password: String): LoginOutput!
+  token(refreshToken: String): LoginOutput!
 }

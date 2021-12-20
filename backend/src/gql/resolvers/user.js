@@ -1,6 +1,48 @@
-const { validateSchema, createToken } = require("../../utils")
+const { validateSchema, verifyRefreshToken, createAccessToken, createRefreshToken } = require("../../utils")
 const bcrypt = require("bcrypt")
 const Joi = require("joi")
+
+const refreshTokenSchema = Joi.string()
+  .required()
+  .custom((val) => verifyRefreshToken(val))
+
+const token = (db) => async (parent, args, context) => {
+  const { refreshToken } = args
+  const userAgent = context.headers["user-agent"]
+
+  validateSchema(refreshTokenSchema, refreshToken)
+
+  const token = await db.Token.findOne({
+    where: {
+      jwt: refreshToken,
+    },
+    include: {
+      model: db.User,
+    },
+  })
+
+  if (!token) {
+    throw Error("Invalid token")
+  }
+
+  const newToken = await db.Token.create({
+    jwt: createRefreshToken({
+      sub: token.User.id,
+    }),
+    app: userAgent,
+    UserId: token.User.id,
+  })
+
+  await token.destroy()
+
+  return {
+    user: token.User.serialize(),
+    accessToken: createAccessToken({
+      sub: newToken.UserId,
+    }),
+    refreshToken: newToken.jwt,
+  }
+}
 
 const loginSchema = Joi.object({
   username: Joi.string().email().required(),
@@ -8,7 +50,7 @@ const loginSchema = Joi.object({
 })
 
 const login = (db) => async (parent, args, context) => {
-  const { username, password } = args.input
+  const { username, password } = args
   const userAgent = context.headers["user-agent"]
 
   validateSchema(loginSchema, {
@@ -39,17 +81,24 @@ const login = (db) => async (parent, args, context) => {
     throw Error("wrong username / password")
   }
 
-  const token = user.Tokens.length
+  const refreshToken = user.Tokens.length
     ? user.Tokens[0]
     : await db.Token.create({
+        jwt: createRefreshToken({
+          sub: user.id,
+        }),
         app: userAgent,
         UserId: user.id,
       })
 
+  const accessToken = createAccessToken({
+    sub: user.id,
+  })
+
   return {
-    user: user?.serialize(),
-    accessToken: createToken(user.serialize()),
-    refreshToken: token.id,
+    user: user.serialize(),
+    accessToken,
+    refreshToken: refreshToken.jwt,
   }
 }
 
@@ -78,10 +127,10 @@ const register = (db) => async (parent, args, context) => {
 }
 
 module.exports = (db) => ({
-  Query: {
-    login: login(db),
-  },
+  Query: {},
   Mutation: {
+    login: login(db),
     register: register(db),
+    token: token(db),
   },
 })

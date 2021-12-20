@@ -3,10 +3,10 @@ dotenv.config({ path: __dirname + "/../.env" })
 
 const colors = require("colors")
 const express = require("express")
+const cors = require("cors")
 const { graphqlHTTP } = require("express-graphql")
 
 const db = require("./models")
-const { parseUser } = require("./middlewares")
 const typeDefs = require("./gql/schemas")
 const resolvers = require("./gql/resolvers")
 
@@ -16,7 +16,7 @@ colors.enable()
 
 const app = express()
 
-app.use(parseUser)
+app.use(cors())
 
 app.use(
   "/graphql",
