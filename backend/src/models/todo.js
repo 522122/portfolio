@@ -10,6 +10,29 @@ module.exports = (sequelize, DataTypes) => {
   Todo.init(
     {
       content: DataTypes.STRING,
+      completed: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+        allowNull: false,
+      },
+      UserId: {
+        type: DataTypes.UUID,
+        references: {
+          model: "Users",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      },
+      TodoListId: {
+        type: DataTypes.UUID,
+        references: {
+          model: "TodoLists",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      },
     },
     {
       sequelize,

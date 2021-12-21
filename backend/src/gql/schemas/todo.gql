@@ -1,0 +1,15 @@
+type Todo {
+  id: ID!
+  content: String!
+  TodoListId: ID!
+}
+
+type TodoList {
+  id: ID!
+  title: String!
+  Todos: [Todo!]!
+}
+
+type Query {
+  todoLists: [TodoList!]!
+}

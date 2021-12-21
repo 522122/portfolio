@@ -1,13 +1,13 @@
 type User {
-  id: ID
-  loginName: String
-  displayName: String
-  admin: Boolean
+  id: ID!
+  loginName: String!
+  displayName: String!
+  admin: Boolean!
 }
 type LoginOutput {
-  user: User
-  accessToken: String
-  refreshToken: String
+  user: User!
+  accessToken: String!
+  refreshToken: String!
 }
 input RegisterInput {
   loginName: String!
